@@ -44,7 +44,7 @@ function ContactForm() {
                 </label>
                 <label className={s.label}>
                   <span>Number:</span>
-                  <Field className={s.input} name='number' />
+                  <Field className={s.input} name='number' placeholder='111-11-11' />
                   <ErrorMessage name='number' component='span' className={s.error} />
                 </label>    
                 <button type="submit">Add contact</button>
