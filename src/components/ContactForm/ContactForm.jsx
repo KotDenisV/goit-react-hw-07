@@ -29,6 +29,7 @@ function ContactForm() {
         name: values.name,
         number: values.number,
       };
+      console.log(newContact);
       dispatch(addContacts(newContact));
       actions.resetForm();
   };
