@@ -10,11 +10,13 @@ function ContactList() {
   
     return (
     <ul className={s.list}>
-      {filteredData.map((contact) => (
-        <li className={s.item} key={contact.id}>          
-          <Contact data={contact} />
-        </li>
-      ))}
+        {filteredData.length ? (
+          filteredData.map((contact) => (
+            <li className={s.item} key={contact.id}>          
+              <Contact data={contact} />
+            </li>
+          )) 
+        ) : (<h2>No data received!</h2>)}
     </ul>
   );
 }

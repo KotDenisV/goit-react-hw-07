@@ -1,32 +1,61 @@
 import axios from "axios";
-import { deleteContacts, fetchContacts, setError, setLoading } from "./contactsSlice";
+// import { deleteContacts, fetchContacts, setError, setLoading } from "./contactsSlice";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 axios.defaults.baseURL = 'https://66b9241c3ce57325ac78ff7c.mockapi.io/';
 
 
-export const fetchContactsThunk = () => async (dispatch) => {
+// export const fetchContactsThunk = () => async (dispatch) => {
+//     try {
+//         dispatch(setLoading(true));
+//         const responce = await axios.get('contacts');
+//         console.log(responce.data);
+//         dispatch(fetchContacts(responce.data));
+//     } catch (error) {
+//         dispatch(setError(true));
+//     } finally {
+//         dispatch(setLoading(false));
+//     }
+
+// };
+
+export const fetchContactsThunk = createAsyncThunk('fetchContacts', async (_, thunkAPI) => {
     try {
-        dispatch(setLoading(true));
-        const responce = await axios.get('contacts');
-        console.log(responce.data);
-        dispatch(fetchContacts(responce.data));
+        const { data } = await axios.get('contacts');
+        return data;
     } catch (error) {
-        dispatch(setError(true));
-    } finally {
-        dispatch(setLoading(false));
+        return thunkAPI.rejectWithValue(error.message);
     }
+});
 
-};
-
-export const deleteContactsThunk = (id) => async (dispatch) => {
+export const deleteContactThunk = createAsyncThunk('deleteContact', async (id, thunkAPI) => {
     try {
-        dispatch(setLoading(true));
-        await axios.delete(`contacts/${id}`);
-        dispatch(deleteContacts(id));        
+        const { data } = await axios.delete(`contacts/${id}`);
+        return data.id;
     } catch (error) {
-        dispatch(setError(true));
-    } finally {
-        dispatch(setLoading(false));
+        return thunkAPI.rejectWithValue(error.message);
     }
+});
 
-};
+export const addContactThunk = createAsyncThunk('addContact', async (body, thunkAPI) => {
+    try {
+        const { data } = await axios.post('contacts', body);
+        return data;
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+    }
+})
+
+
+// export const deleteContactsThunk = (id) => async (dispatch) => {
+//     try {
+//         dispatch(setLoading(true));
+//         await axios.delete(`contacts/${id}`);
+//         dispatch(deleteContacts(id));        
+//     } catch (error) {
+//         dispatch(setError(true));
+//     } finally {
+//         dispatch(setLoading(false));
+//     }
+
+// };

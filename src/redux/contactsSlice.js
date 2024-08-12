@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { addContactThunk, deleteContactThunk, fetchContactsThunk } from "./contactsOps";
 
 
 const initialState = {
@@ -9,25 +10,26 @@ const initialState = {
 
 const slice = createSlice({
     name: 'contacts',
-    initialState,
-    reducers: {   
-        setLoading: (state, action) => {
-            state.loading = action.payload;
-        },
-        setError: (state, action) => {
-            state.error = action.payload;
-        },
-        fetchContacts: (state, action) => {
-            state.items = action.payload;
-        },
-        addContacts: (state, action) => {
-            state.items.push(action.payload);
-        },
-        deleteContacts: (state, action) => {
-            state.items = state.items.filter(item => item.id !== action.payload);
-        },
+    initialState,    
+    extraReducers: builder => {
+        builder
+            .addCase(fetchContactsThunk.fulfilled, (state, action) => {
+                state.items = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetchContactsThunk.pending, (state, action) => {
+                state.loading = true;
+            })
+            .addCase(deleteContactThunk.fulfilled, (state, action) => {
+                state.items = state.items.filter(item => item.id !== action.payload);
+            })
+            .addCase(deleteContactThunk.rejected, (state, action) => {
+                state.error = true;
+            })
+            .addCase(addContactThunk.fulfilled, (state, action) => {
+                state.items.push(action.payload);
+            });
     },
 });
 
 export const contactsReducer = slice.reducer;
-export const { deleteContacts, addContacts, setLoading, setError, fetchContacts } = slice.actions;
